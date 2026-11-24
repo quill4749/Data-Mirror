@@ -1,0 +1,17 @@
+{
+  "instagram": {
+    "location_tracking": 1,
+    "behavioral_profiling": 1,
+    "targeted_ads": 1
+  },
+  "google_maps": {
+    "location_tracking": 2,
+    "targeted_ads": 0,
+    "behavioral_profiling": 0
+  },
+  "youtube": {
+    "behavioral_profiling": 2,
+    "targeted_ads": 1,
+    "location_tracking": 0
+  }
+}
