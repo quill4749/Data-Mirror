@@ -1,0 +1,176 @@
+{
+    "schema_version": "2.0",
+    "generated_at": "2026-11-23T14:54:27+00:00",
+    "description": "Data-Mirror privacy risk matrix. Scores: 0=Safe, 1=Medium, 2=Critical. Weights live in risk_factors so the feature space can be extended without code changes.",
+    "risk_scale": {
+        "0": {
+            "label_zh": "安全",
+            "label_en": "Safe",
+            "definition": "未發現該項資料收集，或僅為使用者主動觸發的單次功能。"
+        },
+        "1": {
+            "label_zh": "中等",
+            "label_en": "Medium",
+            "definition": "與核心功能相關，或需使用者授權後方可使用，但存在一定暴露面。"
+        },
+        "2": {
+            "label_zh": "嚴重",
+            "label_en": "Critical",
+            "definition": "高侵略性的背景收集、跨 App 串接，或涉及不可逆的敏感資料。"
+        }
+    },
+    "risk_thresholds": {
+        "low_max_ratio": 0.3333333333333333,
+        "medium_max_ratio": 0.6666666666666666
+    },
+    "risk_factors": {
+        "behavioral_profiling": {
+            "label_zh": "行為側寫",
+            "label_en": "Behavioral Profiling",
+            "weight": 2.0,
+            "description": "跨 App 追蹤識別碼、裝置指紋、感測器與使用行為的長期彙整。",
+            "rationale": "隱私侵害具有不可逆性：行為資料一旦被交叉連結、建模並轉售，使用者幾乎無法撤回。跨 App 長期追蹤也會形成難以逃逸的個人輪廓，因此給予最高權重 2.0。",
+            "advice": "在 iOS 關閉「允許 App 要求追蹤」，Android 重置廣告 ID 並關閉個人化廣告；定期檢視「應用程式與網站存取權」及第三方登入授權，移除不必要連結。"
+        },
+        "location_tracking": {
+            "label_zh": "位置追蹤",
+            "label_en": "Location Tracking",
+            "weight": 1.5,
+            "description": "精確定位、背景定位、移動路徑與常去地點的收集。",
+            "rationale": "ACCESS_FINE_LOCATION 與 ACCESS_BACKGROUND_LOCATION 屬作業系統最高敏感度權限之一，可推論住家、工作地、醫療與宗教活動；權重 1.5 反映其高敏感度，但通常需使用者授權，故略低於跨 App 行為側寫。",
+            "advice": "將非導航類 App 的定位改為「僅使用期間」或「永不」，關閉「精確位置」，並在系統設定中檢查「背景位置」與 Google/Apple 的定位紀錄。"
+        },
+        "targeted_ads": {
+            "label_zh": "精準廣告",
+            "label_en": "Targeted Ads",
+            "weight": 1.0,
+            "description": "第三方廣告 SDK、Cookie、廣告識別碼與再行銷標籤。",
+            "rationale": "第三方 SDK 與 Cookie 支撐商業行銷與再行銷，雖涉及資料共享，但影響範圍通常較行為側寫與位置追蹤窄，因此基準權重為 1.0。",
+            "advice": "定期清除網站 Cookie，重置廣告識別碼（IDFA / GAID），並在瀏覽器啟用追蹤保護或使用容器化分頁隔離第三方追蹤。"
+        },
+        "microphone_access": {
+            "label_zh": "麥克風存取",
+            "label_en": "Microphone Access",
+            "weight": 1.8,
+            "description": "背景或非使用期間的麥克風收音、語音內容與環境聲音分析。",
+            "rationale": "麥克風可捕捉私人對話與環境聲音，且內容難以撤回；若可在背景存取，風險接近行為側寫，故預設權重 1.8。",
+            "advice": "僅授予通話或錄音 App 麥克風權限，並設定為「僅使用期間」；在系統隱私指示器中定期檢查最近存取麥克風的 App。"
+        },
+        "clipboard_tracking": {
+            "label_zh": "剪貼簿追蹤",
+            "label_en": "Clipboard Tracking",
+            "weight": 1.2,
+            "description": "讀取剪貼簿內容，可能包含密碼、一次性驗證碼、地址或私人訊息。",
+            "rationale": "剪貼簿常短暫承載高價值秘密（OTP、密碼、地址）。雖然收集量通常較小，但外洩後果直接，故列為 1.2 的動態擴充因子。",
+            "advice": "在 iOS 開啟「允許貼上」提示並拒絕不明 App 的讀取；Android 13 以上會顯示剪貼簿存取通知，請定期檢查並避免複製敏感資訊。"
+        },
+        "contacts_access": {
+            "label_zh": "通訊錄存取",
+            "label_en": "Contacts Access",
+            "weight": 1.4,
+            "description": "上傳通訊錄、社交圖譜、電話號碼與聯絡人關聯。",
+            "rationale": "通訊錄會揭露非使用者的第三人資料，形成社交圖譜外洩；其影響擴及他人且難以補救，故給予 1.4 權重。",
+            "advice": "撤銷非通訊或社群核心功能 App 的通訊錄權限；若必須使用，僅開放單一聯絡人而非完整通訊錄。"
+        },
+        "biometric_data": {
+            "label_zh": "生物特徵",
+            "label_en": "Biometric Data",
+            "weight": 1.7,
+            "description": "指紋、臉部、聲紋、步態或其他不可更換的身分特徵。",
+            "rationale": "生物特徵無法像密碼一樣更換，一旦外洩即永久暴露；其不可逆性高，故預設權重 1.7。",
+            "advice": "優先使用裝置本機安全區（Secure Enclave / Keystore）處理生物辨識，避免將臉部或指紋影像上傳雲端；檢查 App 是否要求不必要的生物辨識。"
+        }
+    },
+    "services": {
+        "instagram": {
+            "behavioral_profiling": 2,
+            "location_tracking": 2,
+            "targeted_ads": 2,
+            "microphone_access": 1,
+            "clipboard_tracking": 2,
+            "contacts_access": 2,
+            "biometric_data": 0
+        },
+        "tiktok": {
+            "behavioral_profiling": 2,
+            "location_tracking": 1,
+            "targeted_ads": 2,
+            "microphone_access": 2,
+            "clipboard_tracking": 2,
+            "contacts_access": 1,
+            "biometric_data": 0
+        },
+        "google_maps": {
+            "behavioral_profiling": 1,
+            "location_tracking": 2,
+            "targeted_ads": 0,
+            "microphone_access": 1,
+            "clipboard_tracking": 0,
+            "contacts_access": 0,
+            "biometric_data": 0
+        },
+        "uber": {
+            "behavioral_profiling": 1,
+            "location_tracking": 2,
+            "targeted_ads": 1,
+            "microphone_access": 1,
+            "clipboard_tracking": 0,
+            "contacts_access": 1,
+            "biometric_data": 0
+        },
+        "whatsapp": {
+            "behavioral_profiling": 1,
+            "location_tracking": 1,
+            "targeted_ads": 0,
+            "microphone_access": 2,
+            "clipboard_tracking": 1,
+            "contacts_access": 2,
+            "biometric_data": 0
+        },
+        "signal": {
+            "behavioral_profiling": 0,
+            "location_tracking": 1,
+            "targeted_ads": 0,
+            "microphone_access": 2,
+            "clipboard_tracking": 0,
+            "contacts_access": 2,
+            "biometric_data": 0
+        },
+        "spotify": {
+            "behavioral_profiling": 1,
+            "location_tracking": 0,
+            "targeted_ads": 2,
+            "microphone_access": 1,
+            "clipboard_tracking": 0,
+            "contacts_access": 0,
+            "biometric_data": 0
+        },
+        "notion": {
+            "behavioral_profiling": 0,
+            "location_tracking": 0,
+            "targeted_ads": 1,
+            "microphone_access": 0,
+            "clipboard_tracking": 1,
+            "contacts_access": 0,
+            "biometric_data": 0
+        },
+        "mobile_banking": {
+            "behavioral_profiling": 1,
+            "location_tracking": 1,
+            "targeted_ads": 0,
+            "microphone_access": 1,
+            "clipboard_tracking": 1,
+            "contacts_access": 1,
+            "biometric_data": 2
+        },
+        "calculator_app": {
+            "behavioral_profiling": 0,
+            "location_tracking": 0,
+            "targeted_ads": 1,
+            "microphone_access": 0,
+            "clipboard_tracking": 0,
+            "contacts_access": 0,
+            "biometric_data": 0
+        }
+    }
+}

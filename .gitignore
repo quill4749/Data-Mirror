@@ -1,0 +1,22 @@
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+project-overview.md
+
+# Generated outputs (regenerate with tree_model.py)
+outputs/
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+secrets.json
